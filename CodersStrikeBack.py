@@ -2,8 +2,10 @@ import sys
 import math
 
 
-# Auto-generated code below aims at helping you parse
-# the standard input according to the problem statement.
+def prt(string):
+    print(str(string), file=sys.stderr, flush=True)
+
+
 class Vec2:
     def __init__(self, x, y):
         self.x = int(x)
@@ -41,6 +43,10 @@ class Vec2:
     def __truediv__(self, value):
         return Vec2(self.x / value, self.y / value)
 
+    def angle(self, other):
+        return math.atan2(self.y, self.x) * 180 / math.pi - math.atan2(
+            other.y, other.x) * 180 / math.pi
+
     def dist(self, other):
         return math.sqrt(pow(self.x - other.x, 2) + pow(self.y - other.y, 2))
 
@@ -60,25 +66,22 @@ def easeInOutSine(x):
 
 # game loop
 while True:
-    hasBoost = True
-    # next_checkpoint_x: x position of the next check point
-    # next_checkpoint_y: y position of the next check point
-    # next_checkpoint_dist: distance to the next checkpoint
-    # next_checkpoint_angle: angle between your pod orientation and the direction of the next checkpoint
     x, y, next_checkpoint_x, next_checkpoint_y, next_checkpoint_dist, next_checkpoint_angle = [
         int(i) for i in input().split()
     ]
     opponent_x, opponent_y = [int(i) for i in input().split()]
 
+    hasBoost = True
+    opponent = Vec2(opponent_x, opponent_y)
     target = Vec2(next_checkpoint_x, next_checkpoint_y)
     pos = Vec2(x, y)
 
-    # Write an action using print
-    # To debug: print("Debug messages...", file=sys.stderr, flush=True)
+    prt(next_checkpoint_angle)
+    prt((target - pos).angle(target))
 
     thrust = int(100 * (1 - (abs(next_checkpoint_angle) / 180)))
-    if next_checkpoint_dist < 2000:
-        thrust = int(thrust / 3)
+    if next_checkpoint_dist < 1400:
+        thrust = int(thrust / 5)
     elif next_checkpoint_dist > 5000 and abs(
             next_checkpoint_angle) < 20 and hasBoost:
         thrust = "BOOST"
